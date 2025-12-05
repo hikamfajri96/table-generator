@@ -3,36 +3,31 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Table Generator — Tools</title>
+<title>Table Generator — Blogger</title>
 <style>
-/* UI ringan */
-:root{--bg:#0f1720;--card:#0b1220;--muted:#9aa3ad;--accent:#7dd3fc}
-html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#f4f6f8;color:#111}
-.container{max-width:980px;margin:28px auto;padding:20px}
+:root{--accent:#7dd3fc;--muted:#94a3b8}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:#f7fbfc;color:#0f1720}
+.container{max-width:1100px;margin:28px auto;padding:20px}
 .header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
 .h1{font-size:20px;font-weight:700}
 .card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 6px 20px rgba(12,16,20,0.06);margin-bottom:16px}
 .controls{display:flex;gap:8px;flex-wrap:wrap}
-.controls > *{min-width:0}
 .input,button,select,textarea{font-family:inherit;font-size:14px;padding:8px 10px;border-radius:8px;border:1px solid #e6e9ee}
-.input:focus,textarea:focus,select:focus{outline:2px solid rgba(125,211,252,0.18);border-color:rgba(125,211,252,0.32)}
-.btn{background:var(--accent);border:none;color:#042;cursor:pointer}
+.input:focus,textarea:focus,select:focus{outline:2px solid rgba(125,211,252,0.14);border-color:rgba(125,211,252,0.32)}
+.btn{background:var(--accent);border:none;color:#042;cursor:pointer;border-radius:8px;padding:8px 12px}
 .btn.secondary{background:#eef2f6;color:#123;padding:8px 12px}
-.flex{display:flex;gap:8px;align-items:center}
-.small{font-size:13px;color:var(--muted)}
-.label{font-size:13px;margin-bottom:6px;display:block;color:#334155}
-.grid{display:grid;grid-template-columns:1fr 380px;gap:16px}
-@media(max-width:900px){.grid{grid-template-columns:1fr;}}
-.table-edit{overflow:auto;max-height:50vh;border-radius:8px;border:1px dashed #e6e9ee;padding:8px}
+.grid{display:grid;grid-template-columns:1fr 420px;gap:16px}
+@media(max-width:980px){.grid{grid-template-columns:1fr}}
+.table-edit{overflow:auto;max-height:46vh;border-radius:8px;border:1px dashed #e6e9ee;padding:8px}
 .table-edit table{border-collapse:collapse;width:100%}
 .table-edit th,.table-edit td{padding:8px 10px;border:1px solid #eef2f6}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
 .preview-wrap{max-height:55vh;overflow:auto;padding:10px;border-radius:10px;background:linear-gradient(180deg,#ffffff,#fbfdff);border:1px solid #f0f4f8}
-.footer{font-size:13px;color:var(--muted);margin-top:8px}
-.code-output{width:100%;height:220px;padding:10px;border-radius:8px;border:1px solid #e6e9ee;font-family:monospace;white-space:pre-wrap;overflow:auto;background:#0f1720;color:#e6eef6}
+.code-output{width:100%;height:260px;padding:10px;border-radius:8px;border:1px solid #e6e9ee;font-family:monospace;white-space:pre-wrap;overflow:auto;background:#0b1220;color:#e6eef6}
 .copy-row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:8px}
 .small-btn{padding:6px 10px;border-radius:8px;border:1px solid #e6e9ee;background:#fff;cursor:pointer}
-.notice{font-size:13px;color:#334155;margin-top:8px}
+.label{font-size:13px;margin-bottom:6px;display:block;color:#334155}
+.small{font-size:13px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -40,31 +35,28 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial
   <div class="header">
     <div>
       <div class="h1">Table Generator — Blogger</div>
-      <div class="small">Isi data, preview, lalu generate kode siap-paste ke mode HTML post Blogger.</div>
+      <div class="small">Isi data, preview, lalu generate kode (CSS+JS + &lt;table&gt;) siap-paste ke mode HTML post.</div>
     </div>
-    <div class="small">No tracking • Lokal • Bebas</div>
+    <div class="small">Embed via iframe di Blogger</div>
   </div>
 
   <div class="grid">
     <div>
       <div class="card">
-        <div class="label">Nama kolom (pisah dengan koma atau tekan Enter untuk menambah)</div>
+        <div class="label">Nama kolom (pisah dengan koma atau tekan Enter)</div>
         <textarea id="col-input" class="input" rows="2" placeholder="Contoh: Produk, Kelebihan, Kekurangan"></textarea>
-
         <div style="height:12px"></div>
-
         <div class="toolbar">
           <button id="create-cols" class="btn">Buat Header</button>
           <button id="add-row" class="btn secondary">Tambah Baris</button>
-          <button id="clear" class="small-btn">Reset Semua</button>
+          <button id="clear" class="small-btn">Reset</button>
         </div>
 
         <div style="height:10px"></div>
-
         <div class="label">Editor Tabel</div>
         <div class="table-edit card" id="table-edit">
           <table id="editor-table">
-            <thead><tr><th>Produk</th><th>Keterangan</th></tr></thead>
+            <thead><tr><th contenteditable="true">Produk</th><th contenteditable="true">Keterangan</th></tr></thead>
             <tbody>
               <tr><td contenteditable="true">Contoh Produk</td><td contenteditable="true">Contoh Keterangan</td></tr>
             </tbody>
@@ -72,64 +64,43 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial
         </div>
 
         <div style="height:12px"></div>
-
-        <div class="flex">
+        <div class="controls">
           <button id="preview-btn" class="btn">Tampilkan Preview</button>
           <button id="generate-btn" class="btn">Generate Kode</button>
           <button id="download-btn" class="btn secondary">Download .html</button>
         </div>
-
-        <div class="notice">Tip: Klik sel untuk mengedit. Untuk menambah kolom, edit header di atas lalu klik "Buat Header".</div>
+        <div class="small" style="margin-top:8px">Tip: Edit sel langsung. Untuk menambah kolom, edit header di atas lalu klik "Buat Header".</div>
       </div>
 
       <div class="card">
-        <div class="label">Output HTML (salin dan paste di mode HTML post Blogger)</div>
+        <div class="label">Output HTML (salin & paste di mode HTML post Blogger)</div>
         <div id="code" class="code-output" readonly></div>
         <div class="copy-row">
-          <div class="small">Hasil akan termasuk CSS + JS enhancer.</div>
+          <div class="small">Hasil berisi CSS + JS enhancer (blok tunggal) + tabel.</div>
           <div>
             <button id="copy-btn" class="btn secondary">Copy</button>
             <button id="select-btn" class="small-btn">Select All</button>
           </div>
         </div>
       </div>
-
     </div>
 
     <div>
       <div class="card">
         <div class="label">Preview</div>
-        <div id="preview" class="preview-wrap">
-          <!-- preview bakal muncul di sini -->
-        </div>
+        <div id="preview" class="preview-wrap"></div>
       </div>
 
       <div class="card">
         <div class="label">Kontrol Cepat</div>
-        <div class="controls">
-          <div>
-            <div class="label">Min width tabel (px)</div>
-            <input id="minw" class="input" type="number" value="600" />
-          </div>
-          <div>
-            <div class="label">Max height wrapper (vh)</div>
-            <input id="maxh" class="input" type="number" value="60" />
-          </div>
-          <div>
-            <div class="label">Gunakan class no-wrap pada output?</div>
-            <select id="nowrap-toggle" class="input"><option value="no">Tidak</option><option value="yes">Ya</option></select>
-          </div>
-        </div>
-        <div class="footer">Setelan ini memengaruhi CSS yang di-generate.</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Aturan singkat</div>
-        <ul class="small">
-          <li>Edit isi sel langsung, klik baris untuk pilih. Gunakan Enter untuk baris baru di textarea header.</li>
-          <li>Hasil generate sudah termasuk CSS + JS enhancer (satu-block, tanpa komentar).</li>
-          <li>Jika tidak ingin enhancer otomatis membungkus tabel di post, tambahkan class <code>no-wrap</code> pada &lt;table&gt; atau pilih opsi "Gunakan class no-wrap".</li>
-        </ul>
+        <div class="small">Min width tabel (px)</div>
+        <input id="minw" class="input" type="number" value="600" />
+        <div style="height:8px"></div>
+        <div class="small">Max height wrapper (vh)</div>
+        <input id="maxh" class="input" type="number" value="60" />
+        <div style="height:8px"></div>
+        <div class="small">Tambahkan class <code>no-wrap</code> pada &lt;table&gt; output?</div>
+        <select id="nowrap-toggle" class="input"><option value="no">Tidak</option><option value="yes">Ya</option></select>
       </div>
     </div>
   </div>
@@ -137,7 +108,6 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial
 
 <script>
 (function(){
-
 function qs(id){return document.getElementById(id)}
 var colInput = qs('col-input')
 var createCols = qs('create-cols')
@@ -157,14 +127,11 @@ var downloadBtn = qs('download-btn')
 
 function setHeader(cols){
   var thead = editorTable.querySelector('thead')
-  if(!thead){
-    thead = document.createElement('thead'); editorTable.insertBefore(thead, editorTable.firstChild)
-  }
+  if(!thead){ thead = document.createElement('thead'); editorTable.insertBefore(thead, editorTable.firstChild) }
   var tr = document.createElement('tr')
   cols.forEach(function(c){ var th = document.createElement('th'); th.contentEditable = "true"; th.innerText = c; tr.appendChild(th) })
   thead.innerHTML = ''
   thead.appendChild(tr)
-  // ensure existing rows match column count
   syncCols()
 }
 
@@ -198,7 +165,7 @@ addRowBtn.addEventListener('click',function(){
 })
 
 clearBtn.addEventListener('click',function(){
-  if(!confirm('Reset semua editor tabel?')) return
+  if(!confirm('Reset semua editor?')) return
   editorTable.innerHTML = '<thead><tr><th contenteditable="true">Produk</th><th contenteditable="true">Keterangan</th></tr></thead><tbody><tr><td contenteditable="true">Contoh Produk</td><td contenteditable="true">Contoh Keterangan</td></tr></tbody>'
   colInput.value = ''
   preview.innerHTML = ''
@@ -213,7 +180,6 @@ function buildHTMLTable(){
   var rows = Array.from(tbody.querySelectorAll('tr')).map(function(tr){
     return Array.from(tr.children).map(function(td){ return (td.textContent||td.innerText||'').trim()})
   })
-  // build
   var tableAttrs = ''
   if(nowrapToggle.value === 'yes') tableAttrs = ' class="no-wrap"'
   var html = '<table' + tableAttrs + '>\n  <thead>\n    <tr>\n'
@@ -228,21 +194,19 @@ function buildHTMLTable(){
   return html
 }
 
-function escapeHtml(s){
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-}
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
 
 function getFullPackage(tableHtml){
   var minw = parseInt(minwInput.value) || 600
   var maxh = parseInt(maxhInput.value) || 60
-  // the combined CSS+JS enhancer (clean version)
+
   var css = '<style>' +
 '.bb-table-wrap{position:relative;overflow:auto;max-width:100%;max-height:'+maxh+'vh;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.08);margin:1rem 0;-webkit-overflow-scrolling:touch;cursor:grab;background:#fff;color:#222}' +
-'.bb-table-wrap::before,.bb-table-wrap::after{content:"";position:absolute;top:0;bottom:0;width:48px;pointer-events:none;z-index:3;transition:opacity .18s;opacity:0}' +
+'.bb-table-wrap::before,.bb-table-wrap::after{content:\"\";position:absolute;top:0;bottom:0;width:48px;pointer-events:none;z-index:3;transition:opacity .18s;opacity:0}' +
 '.bb-table-wrap::before{left:0;background:linear-gradient(90deg,rgba(255,255,255,0.95),rgba(255,255,255,0))}' +
 '.bb-table-wrap::after{right:0;background:linear-gradient(-90deg,rgba(255,255,255,0.95),rgba(255,255,255,0))}' +
 '.bb-table-wrap.is-scroll-left::before{opacity:1}.bb-table-wrap.is-scroll-right::after{opacity:1}' +
-'.bb-table-wrap table{border-collapse:collapse;width:100%;min-width:'+minw+'px;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;font-size:14px;background:transparent}' +
+'.bb-table-wrap table{border-collapse:collapse;width:100%;min-width:'+minw+'px;font-family:Inter,system-ui,-apple-system,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial;font-size:14px;background:transparent}' +
 '.bb-table-wrap thead th{position:sticky;top:0;z-index:2;background:#ffffffcc;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:10px 12px;text-align:left;border-bottom:1px solid rgba(0,0,0,0.06);color:#222}' +
 '.bb-table-wrap td,.bb-table-wrap th{padding:10px 12px;border-bottom:1px solid rgba(0,0,0,0.04);vertical-align:middle}' +
 '.bb-table-wrap tbody tr:nth-child(odd){background:rgba(0,0,0,0.02)}.bb-table-wrap tbody tr:hover{background:rgba(0,0,0,0.04)}' +
@@ -258,20 +222,18 @@ function getFullPackage(tableHtml){
 '</style>';
 
   var js = '<script>' +
-'document.addEventListener("DOMContentLoaded",function(){var tables=[...document.querySelectorAll("table")];tables.forEach(function(tbl){if(tbl.closest(".bb-table-wrap"))return;if(tbl.classList.contains("no-wrap"))return;var wrap=document.createElement("div");wrap.className="bb-table-wrap";tbl.parentNode.insertBefore(wrap,tbl);wrap.appendChild(tbl);function upd(){wrap.classList.toggle("is-scroll-left",wrap.scrollLeft>8);wrap.classList.toggle("is-scroll-right",(wrap.scrollWidth-wrap.clientWidth-wrap.scrollLeft)>8)}upd();wrap.addEventListener("scroll",upd);window.addEventListener("resize",upd);var down=false,sx,ss;wrap.addEventListener("pointerdown",function(e){var t=e.target.tagName.toLowerCase();if(["input","textarea","select","button","a"].includes(t))return;down=true;wrap.style.cursor="grabbing";sx=e.clientX;ss=wrap.scrollLeft;wrap.setPointerCapture(e.pointerId);e.preventDefault()});wrap.addEventListener("pointermove",function(e){if(!down)return;var dx=e.clientX-sx;wrap.scrollLeft=ss-dx});["pointerup","pointercancel","pointerleave"].forEach(ev=>wrap.addEventListener(ev,()=>{down=false;wrap.style.cursor="grab"}));wrap.setAttribute("tabindex","0");wrap.addEventListener("keydown",function(e){if(e.key===\"ArrowRight\"){wrap.scrollBy({left:80,behavior:\"smooth\"});e.preventDefault()}if(e.key===\"ArrowLeft\"){wrap.scrollBy({left:-80,behavior:\"smooth\"});e.preventDefault()}if(e.key===\"ArrowDown\"){wrap.scrollBy({top:60,behavior:\"smooth\"});e.preventDefault()}if(e.key===\"ArrowUp\"){wrap.scrollBy({top:-60,behavior:\"smooth\"});e.preventDefault()}})});function isDark(){var d=document.documentElement,b=document.body;var x=[d.classList.contains(\"dark\"),b.classList.contains(\"dark\"),b.classList.contains(\"dark-mode\"),b.classList.contains(\"dark-mode--on\"),d.getAttribute(\"data-theme\")===\"dark\",b.getAttribute(\"data-theme\")===\"dark\",window.matchMedia&&window.matchMedia(\"(prefers-color-scheme: dark)\").matches];return x.some(v=>v)}function applyDark(){var dark=isDark();[...document.querySelectorAll('.bb-table-wrap')].forEach(w=>dark?w.classList.add('bb-dark'):w.classList.remove('bb-dark'))}setTimeout(applyDark,120);var target=document.body||document.documentElement;if(target){var mo=new MutationObserver(()=>applyDark());mo.observe(document.documentElement,{attributes:true,attributeFilter:['class','data-theme']});if(document.body)mo.observe(document.body,{attributes:true,attributeFilter:['class','data-theme']})}if(window.matchMedia){try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyDark)}catch(e){window.matchMedia('(prefers-color-scheme: dark)').addListener(applyDark)}}setTimeout(applyDark,600);});' +
+'document.addEventListener(\"DOMContentLoaded\",function(){var tables=[...document.querySelectorAll(\"table\")];tables.forEach(function(tbl){if(tbl.closest(\".bb-table-wrap\"))return;if(tbl.classList.contains(\"no-wrap\"))return;var wrap=document.createElement(\"div\");wrap.className=\"bb-table-wrap\";tbl.parentNode.insertBefore(wrap,tbl);wrap.appendChild(tbl);function upd(){wrap.classList.toggle(\"is-scroll-left\",wrap.scrollLeft>8);wrap.classList.toggle(\"is-scroll-right\",(wrap.scrollWidth-wrap.clientWidth-wrap.scrollLeft)>8)}upd();wrap.addEventListener(\"scroll\",upd);window.addEventListener(\"resize\",upd);var down=false,sx,ss;wrap.addEventListener(\"pointerdown\",function(e){var t=e.target.tagName.toLowerCase();if([\"input\",\"textarea\",\"select\",\"button\",\"a\"].includes(t))return;down=true;wrap.style.cursor=\"grabbing\";sx=e.clientX;ss=wrap.scrollLeft;wrap.setPointerCapture(e.pointerId);e.preventDefault()});wrap.addEventListener(\"pointermove\",function(e){if(!down)return;var dx=e.clientX-sx;wrap.scrollLeft=ss-dx});[\"pointerup\",\"pointercancel\",\"pointerleave\"].forEach(ev=>wrap.addEventListener(ev,()=>{down=false;wrap.style.cursor=\"grab\"}));wrap.setAttribute(\"tabindex\",\"0\");wrap.addEventListener(\"keydown\",function(e){if(e.key===\"ArrowRight\"){wrap.scrollBy({left:80,behavior:\"smooth\"});e.preventDefault()}if(e.key===\"ArrowLeft\"){wrap.scrollBy({left:-80,behavior:\"smooth\"});e.preventDefault()}if(e.key===\"ArrowDown\"){wrap.scrollBy({top:60,behavior:\"smooth\"});e.preventDefault()}if(e.key===\"ArrowUp\"){wrap.scrollBy({top:-60,behavior:\"smooth\"});e.preventDefault()}})});function isDark(){var d=document.documentElement,b=document.body;var x=[d.classList.contains(\"dark\"),b.classList.contains(\"dark\"),b.classList.contains(\"dark-mode\"),b.classList.contains(\"dark-mode--on\"),d.getAttribute(\"data-theme\")===\"dark\",b.getAttribute(\"data-theme\")===\"dark\",window.matchMedia&&window.matchMedia(\"(prefers-color-scheme: dark)\").matches];return x.some(v=>v)}function applyDark(){var dark=isDark();[...document.querySelectorAll(\".bb-table-wrap\")].forEach(w=>dark?w.classList.add(\"bb-dark\"):w.classList.remove(\"bb-dark\"))}setTimeout(applyDark,120);var target=document.body||document.documentElement;if(target){var mo=new MutationObserver(()=>applyDark());mo.observe(document.documentElement,{attributes:true,attributeFilter:[\"class\",\"data-theme\"]});if(document.body)mo.observe(document.body,{attributes:true,attributeFilter:[\"class\",\"data-theme\"]})}if(window.matchMedia){try{window.matchMedia(\"(prefers-color-scheme: dark)\").addEventListener(\"change\",applyDark)}catch(e){window.matchMedia(\"(prefers-color-scheme: dark)\").addListener(applyDark)}}setTimeout(applyDark,600);});' +
 '</script>';
 
-  // wrap the table HTML into wrapper div for safe output (script will wrap again on load if needed)
   var wrapped = '<div>' + tableHtml + '</div>';
   return css + '\n' + wrapped + '\n' + js;
 }
 
 function renderPreview(){
   var t = buildHTMLTable()
-  if(!t){ preview.innerHTML = '<div style="color:#e11">Tidak ada tabel.</div>'; return }
+  if(!t){ preview.innerHTML = '<div style="color:#b91c1c">Tidak ada tabel.</div>'; return }
   var pkg = getFullPackage(t)
   preview.innerHTML = pkg
-  // run scripts in preview: we need to execute the injected script manually
   Array.from(preview.querySelectorAll('script')).forEach(s=>{
     try{
       var n = document.createElement('script')
@@ -311,14 +273,11 @@ downloadBtn.addEventListener('click',function(){
   var a = document.createElement('a'); a.href = url; a.download = 'table-output.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url)
 })
 
-// helper: ensure header edits sync columns
 editorTable.addEventListener('input', function(e){
-  // if header changed, sync rows length
   if(e.target && e.target.tagName && e.target.tagName.toLowerCase()==='th'){
     syncCols()
   }
 })
-
 })();
 </script>
 </body>
